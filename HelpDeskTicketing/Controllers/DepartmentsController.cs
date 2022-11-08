@@ -12,90 +12,85 @@ using Microsoft.AspNetCore.Authorization;
 namespace HelpDeskTicketing.Controllers
 {
     [Authorize]
-    public class EmployeesController : Controller
+    public class DepartmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public EmployeesController(ApplicationDbContext context)
+        public DepartmentsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Employees
+        // GET: Departments
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Employees.Include(e => e.Departments);
-            return View(await applicationDbContext.ToListAsync());
+              return View(await _context.Departments.ToListAsync());
         }
 
-        // GET: Employees/Details/5
+        // GET: Departments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Employees == null)
+            if (id == null || _context.Departments == null)
             {
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .Include(e => e.Departments)
-                .FirstOrDefaultAsync(m => m.EmployeeId == id);
-            if (employee == null)
+            var department = await _context.Departments
+                .FirstOrDefaultAsync(m => m.DepartmentId == id);
+            if (department == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            return View(department);
         }
 
-        // GET: Employees/Create
+        // GET: Departments/Create
         public IActionResult Create()
         {
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentName");
             return View();
         }
 
-        // POST: Employees/Create
+        // POST: Departments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EmployeeId,EmployeeName,Email,Phone,DepartmentId")] Employee employee)
+        public async Task<IActionResult> Create([Bind("DepartmentId,DepartmentName")] Department department)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(employee);
+                _context.Add(department);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentName", employee.DepartmentId);
-            return View(employee);
+            return View(department);
         }
 
-        // GET: Employees/Edit/5
+        // GET: Departments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Employees == null)
+            if (id == null || _context.Departments == null)
             {
                 return NotFound();
             }
 
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
+            var department = await _context.Departments.FindAsync(id);
+            if (department == null)
             {
                 return NotFound();
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentName", employee.DepartmentId);
-            return View(employee);
+            return View(department);
         }
 
-        // POST: Employees/Edit/5
+        // POST: Departments/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EmployeeId,EmployeeName,Email,Phone,DepartmentId")] Employee employee)
+        public async Task<IActionResult> Edit(int id, [Bind("DepartmentId,DepartmentName")] Department department)
         {
-            if (id != employee.EmployeeId)
+            if (id != department.DepartmentId)
             {
                 return NotFound();
             }
@@ -104,12 +99,12 @@ namespace HelpDeskTicketing.Controllers
             {
                 try
                 {
-                    _context.Update(employee);
+                    _context.Update(department);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeExists(employee.EmployeeId))
+                    if (!DepartmentExists(department.DepartmentId))
                     {
                         return NotFound();
                     }
@@ -120,51 +115,49 @@ namespace HelpDeskTicketing.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentName", employee.DepartmentId);
-            return View(employee);
+            return View(department);
         }
 
-        // GET: Employees/Delete/5
+        // GET: Departments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Employees == null)
+            if (id == null || _context.Departments == null)
             {
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .Include(e => e.Departments)
-                .FirstOrDefaultAsync(m => m.EmployeeId == id);
-            if (employee == null)
+            var department = await _context.Departments
+                .FirstOrDefaultAsync(m => m.DepartmentId == id);
+            if (department == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            return View(department);
         }
 
-        // POST: Employees/Delete/5
+        // POST: Departments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Employees == null)
+            if (_context.Departments == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Employees'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.Departments'  is null.");
             }
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee != null)
+            var department = await _context.Departments.FindAsync(id);
+            if (department != null)
             {
-                _context.Employees.Remove(employee);
+                _context.Departments.Remove(department);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EmployeeExists(int id)
+        private bool DepartmentExists(int id)
         {
-          return _context.Employees.Any(e => e.EmployeeId == id);
+          return _context.Departments.Any(e => e.DepartmentId == id);
         }
     }
 }

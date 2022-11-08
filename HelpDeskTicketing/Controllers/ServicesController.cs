@@ -12,90 +12,85 @@ using Microsoft.AspNetCore.Authorization;
 namespace HelpDeskTicketing.Controllers
 {
     [Authorize]
-    public class EmployeesController : Controller
+    public class ServicesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public EmployeesController(ApplicationDbContext context)
+        public ServicesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Employees
+        // GET: Services
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Employees.Include(e => e.Departments);
-            return View(await applicationDbContext.ToListAsync());
+              return View(await _context.Services.ToListAsync());
         }
 
-        // GET: Employees/Details/5
+        // GET: Services/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Employees == null)
+            if (id == null || _context.Services == null)
             {
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .Include(e => e.Departments)
-                .FirstOrDefaultAsync(m => m.EmployeeId == id);
-            if (employee == null)
+            var service = await _context.Services
+                .FirstOrDefaultAsync(m => m.ServiceId == id);
+            if (service == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            return View(service);
         }
 
-        // GET: Employees/Create
+        // GET: Services/Create
         public IActionResult Create()
         {
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentName");
             return View();
         }
 
-        // POST: Employees/Create
+        // POST: Services/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EmployeeId,EmployeeName,Email,Phone,DepartmentId")] Employee employee)
+        public async Task<IActionResult> Create([Bind("ServiceId,ServiceName")] Service service)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(employee);
+                _context.Add(service);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentName", employee.DepartmentId);
-            return View(employee);
+            return View(service);
         }
 
-        // GET: Employees/Edit/5
+        // GET: Services/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Employees == null)
+            if (id == null || _context.Services == null)
             {
                 return NotFound();
             }
 
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
+            var service = await _context.Services.FindAsync(id);
+            if (service == null)
             {
                 return NotFound();
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentName", employee.DepartmentId);
-            return View(employee);
+            return View(service);
         }
 
-        // POST: Employees/Edit/5
+        // POST: Services/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EmployeeId,EmployeeName,Email,Phone,DepartmentId")] Employee employee)
+        public async Task<IActionResult> Edit(int id, [Bind("ServiceId,ServiceName")] Service service)
         {
-            if (id != employee.EmployeeId)
+            if (id != service.ServiceId)
             {
                 return NotFound();
             }
@@ -104,12 +99,12 @@ namespace HelpDeskTicketing.Controllers
             {
                 try
                 {
-                    _context.Update(employee);
+                    _context.Update(service);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeExists(employee.EmployeeId))
+                    if (!ServiceExists(service.ServiceId))
                     {
                         return NotFound();
                     }
@@ -120,51 +115,49 @@ namespace HelpDeskTicketing.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentName", employee.DepartmentId);
-            return View(employee);
+            return View(service);
         }
 
-        // GET: Employees/Delete/5
+        // GET: Services/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Employees == null)
+            if (id == null || _context.Services == null)
             {
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .Include(e => e.Departments)
-                .FirstOrDefaultAsync(m => m.EmployeeId == id);
-            if (employee == null)
+            var service = await _context.Services
+                .FirstOrDefaultAsync(m => m.ServiceId == id);
+            if (service == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            return View(service);
         }
 
-        // POST: Employees/Delete/5
+        // POST: Services/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Employees == null)
+            if (_context.Services == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Employees'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.Services'  is null.");
             }
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee != null)
+            var service = await _context.Services.FindAsync(id);
+            if (service != null)
             {
-                _context.Employees.Remove(employee);
+                _context.Services.Remove(service);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EmployeeExists(int id)
+        private bool ServiceExists(int id)
         {
-          return _context.Employees.Any(e => e.EmployeeId == id);
+          return _context.Services.Any(e => e.ServiceId == id);
         }
     }
 }

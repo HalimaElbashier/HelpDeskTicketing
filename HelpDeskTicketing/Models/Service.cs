@@ -13,9 +13,9 @@ namespace HelpDeskTicketing.Models
         [Required]
         [Display(Name = "Service Name")]
         [Column(TypeName = "varchar(200)")]
-        public string ServiceName { get; set; }
+        public string ServiceName { get; set; } = string.Empty; 
 
         //RelationShips
-        public List<Tickets> Tickets { get; set; }
+        public virtual ICollection<Tickets> Tickets { get; set; } = new List<Tickets>();    
     }
 }

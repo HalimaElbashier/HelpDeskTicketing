@@ -14,10 +14,11 @@ namespace HelpDeskTicketing.Models
         [Display(Name = "Technician Name")]
         [Column(TypeName = "varchar(200)")]
         public string TechnicianName { get; set; } = string.Empty;
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Role {get; set; }
+        public string Email { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;   
+        public string Password { get; set; } = string.Empty;
+        public string RoleDescription { get; set; } = string.Empty;
         //Relationships
-        public List<Tickets> Tickets { get; set; }
+        public virtual ICollection<Tickets> Tickets { get; set; } = new List<Tickets>();    
     }
 }

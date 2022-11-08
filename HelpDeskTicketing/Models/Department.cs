@@ -14,6 +14,7 @@ namespace HelpDeskTicketing.Models
         [Column(TypeName ="varchar(200)")]
         public string DepartmentName { get; set; } = string.Empty;
         //Relationships
-        public List<Employee> Employees { get; set; }
+       
+        public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();    
     }
 }

@@ -15,7 +15,7 @@ namespace HelpDeskTicketing.Models
         public int ServiceId  { get; set; }
 
         [Display(Name ="Description")]
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         [Required]
         [Display(Name = "Ticketing Time")]
         public DateTime CreatedDate { get; set; }
@@ -30,12 +30,12 @@ namespace HelpDeskTicketing.Models
         public int TechnicianId { get; set; }
         [Required]
         [Display(Name = "Status")]
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;  
         [ForeignKey("TechnicianId")]
-        public Technician? technician { get; set; }
+        public virtual Technician? technicians { get; set; }
         [ForeignKey("EmployeeId")]
-        public Employee? employee { get; set; }
+        public virtual Employee? employees { get; set; }
         [ForeignKey("ServiceId")]
-        public Service? service { get; set; }
+        public virtual Service? services { get; set; }
     }
 }
